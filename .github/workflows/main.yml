@@ -27,8 +27,8 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
 
-    - name: Restart RDP Service
-      run: Restart-Service TermService
+    - name: Restart RDP Service (Forced)
+      run: Restart-Service TermService -Force
 
     - name: Set User Password
       run: |
