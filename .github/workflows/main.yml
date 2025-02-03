@@ -1,38 +1,30 @@
-name: Cl
+GitHub RDP LongTime: 
 
-on: [push, workflow_dispatch]
+GitHub:
+https://github.com/
+
+LiteManager:
+https://www.litemanager.com/
+
+name: Windows - LiteManager
+
+on:
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Start Building...
     runs-on: windows-latest
-
+    timeout-minutes: 9999
+    
     steps:
-    - name: Download Ngrok
-      run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/lm_win-10_github_rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
 
-    - name: Extract Ngrok
-      run: Expand-Archive -Path ngrok.zip -DestinationPath ngrok
+      - name: Connect to LiteManager
+        run: cmd /c show.bat
 
-    - name: Set PowerShell Execution Policy
-      run: Set-ExecutionPolicy Unrestricted -Scope Process -Force
-
-    - name: Authenticate Ngrok
-      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-
-    - name: Enable RDP
-      run: |
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
-
-    - name: Restart RDP Service (Forced)
-      run: Restart-Service TermService -Force
-
-    - name: Set User Password
-      run: |
-        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-
-    - name: Create Ngrok Tunnel
-      run: .\ngrok\ngrok.exe tcp 3389 --log=stdout
+      - name: Time Counter
+        run: cmd /c loop.bat
